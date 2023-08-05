@@ -1,6 +1,6 @@
 
 require("dotenv").config();
-
+const fetch = require("node-fetch");
 const KEY = process.env.OPENAI_KEY;
 
 async function fetchFromOpenAI(messages) {
