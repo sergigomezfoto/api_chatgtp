@@ -31,14 +31,14 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    store: new RedisStore({ client: redisClient }),
+    //store: new RedisStore({ client: redisClient }),
     secret: generateSecret(),
     resave: false,
     saveUninitialized: true,
-    cookie: {
-      secure: true,
-      sameSite: "lax",
-    },
+    // cookie: {
+    //   secure: true,
+    //   sameSite: "lax",
+    // },
   })
 );
 
