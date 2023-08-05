@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
 const Redis = require("ioredis");
+const sessionStore = new RedisStore({ client: redisClient });
 require("dotenv").config();
 const { REDIS_URL } = process.env;
 const redisClient = new Redis(REDIS_URL);
@@ -31,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    //store: new RedisStore({ client: redisClient }),
+    store:sessionStore,
     secret: generateSecret(),
     resave: false,
     saveUninitialized: true,
