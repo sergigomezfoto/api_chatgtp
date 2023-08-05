@@ -20,8 +20,10 @@ async function fetchFromOpenAI(messages) {
     });
   
     if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error from OpenAI:', errorData);
       throw new Error('Failed to fetch from OpenAI');
-    }
+  }
   
     return await response.json();
   }
