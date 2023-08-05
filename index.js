@@ -6,12 +6,6 @@ require("dotenv").config();
 const { REDIS_URL } = process.env;
 const redisClient = new Redis(REDIS_URL);
 
-const cors = require('cors');
-app.use(cors({
-    origin: true, 
-    credentials: true
-}));
-
 redisClient.on("connect", function () {
   console.log("Connected to Redis");
 });
@@ -29,6 +23,11 @@ const { fetchFromOpenAI } = require("./gpt_helpers/chatgptFetch");
 const { generateSecret } = require("./helpers/secretGeneration");
 
 const app = express();
+const cors = require('cors');
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 const PORT = process.env.PORT || 3000;
 const MAX_CONTEXT_MESSAGES = 10;
 
