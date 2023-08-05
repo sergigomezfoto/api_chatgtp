@@ -2,10 +2,10 @@ const express = require("express");
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
 const Redis = require("ioredis");
-const sessionStore = new RedisStore({ client: redisClient });
 require("dotenv").config();
 const { REDIS_URL } = process.env;
 const redisClient = new Redis(REDIS_URL);
+const sessionStore = new RedisStore({ client: redisClient });
 // Añade los manejadores de eventos aquí
 redisClient.on("connect", function () {
   console.log("Connected to Redis");
