@@ -1,8 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
 const Redis = require("ioredis");
-require("dotenv").config();
 const { REDIS_URL } = process.env;
 const redisClient = new Redis(REDIS_URL);
 
@@ -21,34 +21,35 @@ redisClient.on("end", function () {
 const { manageContext } = require("./gpt_helpers/gpt_helpers");
 const { fetchFromOpenAI } = require("./gpt_helpers/chatgptFetch");
 const { generateSecret } = require("./helpers/secretGeneration");
+const PORT = process.env.PORT || 3000;
+const MAX_CONTEXT_MESSAGES = 10;
+
 
 const app = express();
+app.set('trust proxy', 1);
 const cors = require('cors');
 app.use(cors({
     origin: true,
     credentials: true
 }));
-const PORT = process.env.PORT || 3000;
-const MAX_CONTEXT_MESSAGES = 10;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
     session({
         store: new RedisStore({ client: redisClient }),
         secret: generateSecret(),
         resave: false,
-        saveUninitialized: false, // Prueba cambiando a 'false'
+        saveUninitialized: false,
         cookie: {
-          secure: process.env.NODE_ENV === "production", // Asegura en producción, no en desarrollo
+          secure: process.env.NODE_ENV === "production",
           sameSite: "none",
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000, // 1 día
         },
-      })
+    })
 );
-
+console.log('Environment:', process.env.NODE_ENV);
 app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message;
 
