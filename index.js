@@ -3,8 +3,7 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const redis = require('redis');
 const redisClient = redis.createClient({
-    host: 'red-cj79fvtjeehc73a4o5v0',
-    port: 6379
+    url:"redis://red-cj79fvtjeehc73a4o5v0:6379"
 });
 const {  manageContext } = require("./gpt_helpers/gpt_helpers");
 const { fetchFromOpenAI } = require("./gpt_helpers/chatgptFetch");
