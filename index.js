@@ -39,7 +39,7 @@ app.use(
       secret: generateSecret(),
       resave: false,
       saveUninitialized: true,
-      // cookie: { secure: true }
+      cookie: { secure: true }
     })
   );
 
