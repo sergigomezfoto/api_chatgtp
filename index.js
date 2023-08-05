@@ -5,6 +5,23 @@ const redis = require('redis');
 const redisClient = redis.createClient({
     url:"redis://red-cj79fvtjeehc73a4o5v0:6379"
 });
+// Añade los manejadores de eventos aquí
+redisClient.on('connect', function() {
+    console.log('Connected to Redis');
+});
+
+redisClient.on('error', function(err) {
+    console.error('Error occurred with Redis:', err);
+});
+
+redisClient.on('end', function() {
+    console.warn('Redis connection closed');
+});
+
+
+
+
+
 const {  manageContext } = require("./gpt_helpers/gpt_helpers");
 const { fetchFromOpenAI } = require("./gpt_helpers/chatgptFetch");
 const { generateSecret } = require("./helpers/secretGeneration");
