@@ -36,10 +36,10 @@ app.use(
     secret: generateSecret(),
     resave: false,
     saveUninitialized: true,
-    // cookie: {
-    //   secure: true,
-    //   sameSite: "lax",
-    // },
+    cookie: {
+      secure: true,
+      sameSite: "lax",
+    },
   })
 );
 
