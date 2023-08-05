@@ -5,8 +5,13 @@ const Redis = require("ioredis");
 require("dotenv").config();
 const { REDIS_URL } = process.env;
 const redisClient = new Redis(REDIS_URL);
-const sessionStore = new RedisStore({ client: redisClient });
-// Añade los manejadores de eventos aquí
+
+const cors = require('cors');
+app.use(cors({
+    origin: true, 
+    credentials: true
+}));
+
 redisClient.on("connect", function () {
   console.log("Connected to Redis");
 });
@@ -62,6 +67,7 @@ app.post("/api/chat", async (req, res) => {
   try {
     const json = await fetchFromOpenAI(req.session.messages);
     req.session.messages.push(json.choices[0].message);
+    console.log('Session data:', req.session);
     res.json(json);
   } catch (error) {
     console.error("Error:", error);
