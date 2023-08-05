@@ -1,47 +1,46 @@
 const express = require("express");
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
-const Redis = require('ioredis');
+const session = require("express-session");
+const RedisStore = require("connect-redis")(session);
+const Redis = require("ioredis");
 require("dotenv").config();
-const { REDIS_URL } = process.env; 
+const { REDIS_URL } = process.env;
 const redisClient = new Redis(REDIS_URL);
 // Añade los manejadores de eventos aquí
-redisClient.on('connect', function() {
-    console.log('Connected to Redis');
+redisClient.on("connect", function () {
+  console.log("Connected to Redis");
 });
 
-redisClient.on('error', function(err) {
-    console.error('Error occurred with Redis:', err);
+redisClient.on("error", function (err) {
+  console.error("Error occurred with Redis:", err);
 });
 
-redisClient.on('end', function() {
-    console.warn('Redis connection closed');
+redisClient.on("end", function () {
+  console.warn("Redis connection closed");
 });
 
-
-
-
-
-const {  manageContext } = require("./gpt_helpers/gpt_helpers");
+const { manageContext } = require("./gpt_helpers/gpt_helpers");
 const { fetchFromOpenAI } = require("./gpt_helpers/chatgptFetch");
 const { generateSecret } = require("./helpers/secretGeneration");
 
 const app = express();
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000;
 const MAX_CONTEXT_MESSAGES = 10;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
-    session({
-      store: new RedisStore({ client: redisClient }),
-      secret: generateSecret(),
-      resave: false,
-      saveUninitialized: true,
-      cookie: { secure: true }
-    })
-  );
+  session({
+    store: new RedisStore({ client: redisClient }),
+    secret: generateSecret(),
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: true,
+      sameSite: "lax",
+    },
+  })
+);
 
 app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message;
