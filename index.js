@@ -31,16 +31,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
-  session({
-    store:sessionStore,
-    secret: generateSecret(),
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: true,
-      sameSite: "none",
-    },
-  })
+    session({
+        store: new RedisStore({ client: redisClient }),
+        secret: generateSecret(),
+        resave: false,
+        saveUninitialized: false, // Prueba cambiando a 'false'
+        cookie: {
+          secure: process.env.NODE_ENV === "production", // Asegura en producción, no en desarrollo
+          sameSite: "none",
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000, // 1 día
+        },
+      })
 );
 
 app.post("/api/chat", async (req, res) => {
