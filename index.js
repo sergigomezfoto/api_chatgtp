@@ -1,5 +1,11 @@
 const express = require("express");
-const session = require("express-session");
+const session = require('express-session');
+const RedisStore = require('connect-redis').default;
+const redis = require('redis');
+const redisClient = redis.createClient({
+    host: 'red-cj79fvtjeehc73a4o5v0',
+    port: 6379
+});
 const {  manageContext } = require("./gpt_helpers/gpt_helpers");
 const { fetchFromOpenAI } = require("./gpt_helpers/chatgptFetch");
 const { generateSecret } = require("./helpers/secretGeneration");
@@ -12,13 +18,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
-  session({
-    secret: generateSecret(),
-    resave: false,
-    saveUninitialized: true,
-    // cookie: { secure: true }
-  }) 
-);
+    session({
+      store: new RedisStore({ client: redisClient }),
+      secret: generateSecret(),
+      resave: false,
+      saveUninitialized: true,
+      // cookie: { secure: true }
+    })
+  );
 
 app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message;
