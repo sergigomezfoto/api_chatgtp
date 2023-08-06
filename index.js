@@ -11,13 +11,23 @@ const { fetchFromOpenAI } = require("./gpt_helpers/chatgptFetch");
 const { generateSecret } = require("./helpers/secretGeneration");
 
 const { REDIS_URL, NODE_ENV, PORT = 3000 } = process.env;
-const MAX_CONTEXT_MESSAGES = 10;
-const redisClient = new Redis(REDIS_URL);
 
-// 2. Configuració  Redis
-redisClient.on("connect", () => console.log("Connected to Redis"));
-redisClient.on("error", err => console.error("Error occurred with Redis:", err));
-redisClient.on("end", () => console.warn("Redis connection closed"));
+const MAX_CONTEXT_MESSAGES = 10;
+
+let redisClient;
+
+if (NODE_ENV !== 'development' && REDIS_URL) {
+    console.log('entro');
+    redisClient = new Redis(REDIS_URL); 
+    
+    redisClient.on("connect", () => console.log("Connected to Redis"));
+    redisClient.on("error", err => console.error("Error occurred with Redis:", err));
+    redisClient.on("end", () => console.warn("Redis connection closed"));
+}
+
+const sessionStore = (NODE_ENV !== 'development' && REDIS_URL)
+    ? new RedisStore({ client: redisClient }) 
+    : new session.MemoryStore();
 
 // 3. Configuració  Express
 const app = express();
@@ -27,7 +37,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    store: new RedisStore({ client: redisClient }),
+    store: sessionStore,
     secret: generateSecret(),
     resave: false,
     saveUninitialized: false,
