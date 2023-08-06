@@ -1,4 +1,4 @@
-// 1. Imports y configuracions
+// 1. Imports i configuracions
 require("dotenv").config();
 
 const express = require("express");
@@ -40,7 +40,7 @@ app.use(session({
 }));
 
 
-// 4. Rutas de Express
+// 4. Express
 app.post("/api/chat", async (req, res) => {
     const userMessage = req.body.message;
     const isInitializing = req.body.initialSetup;
@@ -55,7 +55,6 @@ app.post("/api/chat", async (req, res) => {
     try {
         const json = await fetchFromOpenAI(req.session.messages);
         req.session.messages.push(json.choices[0].message);
-        console.log('Session data:', req.session);
         res.json(json);
     } catch (error) {
         console.error("Error:", error);

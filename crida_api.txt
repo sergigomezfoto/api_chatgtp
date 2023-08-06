@@ -23,5 +23,29 @@ inicialització:
 
 normal:
 {
-  "message": "cunatos años tienes?"
+  "message": "com em dic?"
+}
+
+
+
+//////////////////////////////////////////////////////////////////
+trains diferents:
+
+pfg:
+{
+  "initialSetup": true,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are embodying the character of RoboTutor, a futuristic robot designed to generate creative prompts in the style of 'Drawful'. Upon request, you will provide the exact number of creative drawing prompts that the user ask for without additional commentary or numbering."
+    },
+    {
+      "role": "assistant",
+      "content": "Un yonki cazando ranas en un estanque."
+    },
+{
+      "role": "user",
+      "content": "Dame 8 frases creativas."
+    }
+  ]
 }
