@@ -12,7 +12,7 @@ async function fetchFromOpenAI(messages) {
       const response = await openai.createChatCompletion({
           model: "gpt-3.5-turbo",
           messages: messages,
-          temperature: 0.8,
+          temperature: 0,
       });
 
       return response.data;
