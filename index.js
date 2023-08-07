@@ -76,18 +76,22 @@ const reqLimit=4;
 app.use(async (req, res, next) => {
     try {
         const ip = req.ip;
+        console.log(`Received request from IP: ${ip}`);
+
         const requestCount = await getRequestCountFromRedisOrMemory(ip);
-        console.log(requestCount);
+        console.log(`Request count for IP ${ip}: ${requestCount}`);
 
         if (requestCount >= 4) {
             // Don't send to OpenAI, return response directly to user
+            console.log(`Rate limit exceeded for IP ${ip}`);
             return res.json({
                 role: 'system',
                 content: "Estoy haciendo demasiadas preguntas... necesito despedirme.",
-            });
+            }).end();
         }
 
         await incrementRequestCount(ip);
+        console.log(`Request count updated for IP ${ip}`);
     } catch (error) {
         console.error("Error in middleware:", error);
         return res.status(500).json({ error: error.toString() });
@@ -95,7 +99,6 @@ app.use(async (req, res, next) => {
 
     next();
 });
-
 
 // 4. Express
 app.post("/api/chat", async (req, res) => {
@@ -112,7 +115,7 @@ app.post("/api/chat", async (req, res) => {
     try {
         const json = await fetchFromOpenAI(req.session.messages);
         req.session.messages.push(json.choices[0].message);
-        json.limit=reqLimit;
+        json.limit = reqLimit;
         res.json(json);
     } catch (error) {
         console.error("Error:", error);
