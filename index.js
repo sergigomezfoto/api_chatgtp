@@ -13,14 +13,13 @@ const { REDIS_URL, NODE_ENV, PORT = 3000 } = process.env;
 
 const MAX_CONTEXT_MESSAGES = 10;
 const reqLimit = 4;
-const cookieMaxAge = 60 * 1000; // 1 minute (time to reset the counter)
+const cookieMaxAge = null; // Cookie se eliminará cuando el navegador se cierre
 
 let requestStore;
 
 if (NODE_ENV !== "development" && REDIS_URL) {
   console.log("entro");
   requestStore = new Redis(REDIS_URL);
-
   requestStore.on("connect", () => console.log("Connected to Redis"));
   requestStore.on("error", (err) => console.error("Error occurred with Redis:", err));
   requestStore.on("end", () => console.warn("Redis connection closed"));
@@ -56,7 +55,7 @@ app.use((req, res, next) => {
     const lastRequestTime = req.session.lastRequestTime || 0;
     const currentTime = Date.now();
 
-    if (currentTime - lastRequestTime >= cookieMaxAge) {
+    if (currentTime - lastRequestTime >= 60 * 1000) { // 1 minuto
       req.session.requestCount = 1;
       req.session.lastRequestTime = currentTime;
     } else {
@@ -70,7 +69,7 @@ app.use((req, res, next) => {
     if (req.session.requestCount > reqLimit) {
       console.log(`Rate limit: ${reqLimit} exceeded for IP ${req.ip}`);
 
-      const timeRemainingInSeconds = Math.ceil((cookieMaxAge - (currentTime - lastRequestTime)) / 1000);
+      const timeRemainingInSeconds = Math.ceil((60 * 1000 - (currentTime - lastRequestTime)) / 1000);
       console.log(`Time remaining: ${timeRemainingInSeconds} seconds`);
 
       return res.json({
