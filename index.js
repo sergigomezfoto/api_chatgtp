@@ -96,7 +96,8 @@ app.use(async (req, res, next) => {
         console.error("Error in middleware:", error);
         return res.status(500).json({ error: error.toString() });
     }
-
+console.log('------------------------------------------------------------------------------------');
+console.log('------------------------------------------------------------------------------------');
     next();
 });
 
