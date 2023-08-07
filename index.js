@@ -111,6 +111,7 @@ app.post("/api/chat", async (req, res) => {
     try {
         const json = await fetchFromOpenAI(req.session.messages);
         req.session.messages.push(json.choices[0].message);
+        
         res.json(json);
     } catch (error) {
         console.error("Error:", error);
