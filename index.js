@@ -78,7 +78,7 @@ app.use(async (req, res, next) => {
         const requestCount = await getRequestCountFromRedisOrMemory(ip);
         console.log(requestCount);
 
-        if (requestCount >= 1) {
+        if (requestCount >= 4) {
             // Don't send to OpenAI, return response directly to user
             return res.json({
                 role: 'system',
