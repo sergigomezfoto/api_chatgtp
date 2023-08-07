@@ -71,6 +71,7 @@ app.use(session({
       //maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
 }));
+const reqLimit=4;
 // Middleware to limit requests by IP
 app.use(async (req, res, next) => {
     try {
@@ -111,7 +112,7 @@ app.post("/api/chat", async (req, res) => {
     try {
         const json = await fetchFromOpenAI(req.session.messages);
         req.session.messages.push(json.choices[0].message);
-        
+        json.limit=reqLimit;
         res.json(json);
     } catch (error) {
         console.error("Error:", error);
