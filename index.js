@@ -82,6 +82,10 @@ app.post("/api/chat", async (req, res) => {
     res.status(500).json({ error: error.toString() });
   }
 });
+//això no fa res només serveix per aixecar de la letargia el servidor de render
+app.get('/wakeup', (req, res) => {
+  res.send();
+});
 
 // Iniciem el servidor i l'escoltem en el port especificat a l'entorn o el port 3000 per defecte
 app.listen(PORT, () => {
