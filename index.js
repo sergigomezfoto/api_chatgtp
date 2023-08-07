@@ -14,6 +14,7 @@ const { generateSecret } = require("./helpers/secretGeneration");
 const { REDIS_URL, NODE_ENV, PORT = 3000 } = process.env;
 
 const MAX_CONTEXT_MESSAGES = 10;
+const reqLimit=200;
 const LIMIT_RESET_TIME_IN_SEC = NODE_ENV === 'development' ? 60 : 30; // 60 seconds for development, 2 hours for production 2 * 60 * 60
 
 let requestStore;
@@ -71,7 +72,6 @@ app.use(session({
       //maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
 }));
-const reqLimit=200;
 // Middleware to limit requests by IP
 app.use(async (req, res, next) => {
     try {
@@ -81,7 +81,7 @@ app.use(async (req, res, next) => {
         const requestCount = await getRequestCountFromRedisOrMemory(ip);
         console.log(`Request count for IP ${ip}: ${requestCount}`);
 
-        if (requestCount >= 4) {
+        if (requestCount >= reqLimit) {
             // Don't send to OpenAI, return response directly to user
             console.log(`Rate limit exceeded for IP ${ip}`);
             return res.json({
