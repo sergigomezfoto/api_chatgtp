@@ -71,7 +71,7 @@ app.use(session({
       //maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
 }));
-const reqLimit=4;
+const reqLimit=200;
 // Middleware to limit requests by IP
 app.use(async (req, res, next) => {
     try {
