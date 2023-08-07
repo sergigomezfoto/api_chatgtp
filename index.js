@@ -83,7 +83,7 @@ app.use(async (req, res, next) => {
 
         if (requestCount >= reqLimit) {
             // Don't send to OpenAI, return response directly to user
-            console.log(`Rate limit exceeded for IP ${ip}`);
+            console.log(`Rate limit: ${reqLimit} exceeded for IP ${ip}`);
             return res.json({
                 role: 'system',
                 content: "Estoy haciendo demasiadas preguntas... necesito despedirme.",
