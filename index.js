@@ -14,8 +14,8 @@ const { generateSecret } = require("./helpers/secretGeneration");
 const { REDIS_URL, NODE_ENV, PORT = 3000 } = process.env;
 
 const MAX_CONTEXT_MESSAGES = 10;
-const reqLimit = 200;
-const LIMIT_RESET_TIME_IN_SEC = NODE_ENV === "development" ? 60 : 30; // 60 seconds for development, 2 hours for production 2 * 60 * 60
+const reqLimit = 4;
+const LIMIT_RESET_TIME_IN_SEC = NODE_ENV === "development" ? 60 : 60; // 60 seconds for development, 2 hours for production 2 * 60 * 60
 
 let requestStore;
 
